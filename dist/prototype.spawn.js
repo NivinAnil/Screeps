@@ -23,9 +23,20 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
     }
     const maxEnergy = room.energyCapacityAvailable;
     let name = undefined;
+    // Initialize minCreeps if it doesn't exist
+    if (!this.memory.minCreeps) {
+        this.memory.minCreeps = {
+            harvester: 2,
+            upgrader: 1,
+            builder: 1,
+            repairer: 1,
+            wallRepairer: 1,
+            // Add other roles with default values as needed
+        };
+    }
     // Check for each role and spawn if necessary
     for (let role of listOfRoles) {
-        if (numberOfCreeps[role] < this.memory.minCreeps[role]) {
+        if (numberOfCreeps[role] < (this.memory.minCreeps[role] || 0)) {
             let spawnResult;
             if (role == "lorry") {
                 spawnResult = this.createLorry(maxEnergy);
