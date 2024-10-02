@@ -1,4 +1,7 @@
-export function run(creep) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.run = void 0;
+function run(creep) {
     const source = Game.getObjectById(creep.memory.sourceId);
     if (source) {
         const container = source.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -24,4 +27,5 @@ export function run(creep) {
         console.log(`Miner ${creep.name} couldn't find its assigned source`);
     }
 }
+exports.run = run;
 //# sourceMappingURL=role.miner.js.map

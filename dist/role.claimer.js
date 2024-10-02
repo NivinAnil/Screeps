@@ -1,4 +1,7 @@
-export function run(creep) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.run = void 0;
+function run(creep) {
     if (creep.room.name != creep.memory.target) {
         const exit = creep.room.findExitTo(creep.memory.target);
         if (exit !== ERR_NO_PATH && exit !== ERR_INVALID_ARGS) {
@@ -14,4 +17,5 @@ export function run(creep) {
         }
     }
 }
+exports.run = run;
 //# sourceMappingURL=role.claimer.js.map

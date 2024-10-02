@@ -1,5 +1,8 @@
-import { run as runBuilder } from "./role.builder";
-export function run(creep) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.run = void 0;
+const role_builder_1 = require("./role.builder");
+function run(creep) {
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
         creep.memory.working = false;
     }
@@ -27,11 +30,12 @@ export function run(creep) {
             }
         }
         else {
-            runBuilder(creep);
+            (0, role_builder_1.run)(creep);
         }
     }
     else {
         creep.getEnergy(true, true);
     }
 }
+exports.run = run;
 //# sourceMappingURL=role.wallRepairer.js.map

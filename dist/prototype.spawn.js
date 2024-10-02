@@ -1,4 +1,6 @@
-import * as _ from "lodash";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _ = require("lodash");
 const listOfRoles = [
     "harvester",
     "lorry",

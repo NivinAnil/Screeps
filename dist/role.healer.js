@@ -1,4 +1,7 @@
-export function run(creep) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.run = void 0;
+function run(creep) {
     const damagedCreep = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
         filter: (c) => c.hits < c.hitsMax
     });
@@ -23,4 +26,5 @@ export function run(creep) {
         }
     }
 }
+exports.run = run;
 //# sourceMappingURL=role.healer.js.map

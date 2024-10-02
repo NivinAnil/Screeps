@@ -1,21 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.loop = void 0;
 // import modules
-import "./prototype.creep";
-import "./prototype.tower";
-import "./prototype.spawn";
-import "./role.harvester";
-import "./role.upgrader";
-import "./role.builder";
-import "./role.repairer";
-import "./role.wallRepairer";
-import "./role.longDistanceHarvester";
-import "./role.claimer";
-import "./role.miner";
-import "./role.lorry";
-import "./role.defender";
-import "./role.mineralHarvester";
-import "./role.healer";
-import * as _ from "lodash";
-export function loop() {
+require("./prototype.creep");
+require("./prototype.tower");
+require("./prototype.spawn");
+require("./role.harvester");
+require("./role.upgrader");
+require("./role.builder");
+require("./role.repairer");
+require("./role.wallRepairer");
+require("./role.longDistanceHarvester");
+require("./role.claimer");
+require("./role.miner");
+require("./role.lorry");
+require("./role.defender");
+require("./role.mineralHarvester");
+require("./role.healer");
+const _ = require("lodash");
+function loop() {
     // Clear memory of dead creeps
     for (let name in Memory.creeps) {
         if (!Game.creeps[name]) {
@@ -40,4 +43,5 @@ export function loop() {
         }
     }
 }
+exports.loop = loop;
 //# sourceMappingURL=main.js.map

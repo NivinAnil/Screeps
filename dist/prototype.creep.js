@@ -1,28 +1,30 @@
-import { run as runHarvester } from "./role.harvester";
-import { run as runUpgrader } from "./role.upgrader";
-import { run as runBuilder } from "./role.builder";
-import { run as runRepairer } from "./role.repairer";
-import { run as runWallRepairer } from "./role.wallRepairer";
-import { run as runLongDistanceHarvester } from "./role.longDistanceHarvester";
-import { run as runClaimer } from "./role.claimer";
-import { run as runMiner } from "./role.miner";
-import { run as runLorry } from "./role.lorry";
-import { run as runDefender } from "./role.defender";
-import { run as runMineralHarvester } from "./role.mineralHarvester";
-import { run as runHealer } from "./role.healer";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const role_harvester_1 = require("./role.harvester");
+const role_upgrader_1 = require("./role.upgrader");
+const role_builder_1 = require("./role.builder");
+const role_repairer_1 = require("./role.repairer");
+const role_wallRepairer_1 = require("./role.wallRepairer");
+const role_longDistanceHarvester_1 = require("./role.longDistanceHarvester");
+const role_claimer_1 = require("./role.claimer");
+const role_miner_1 = require("./role.miner");
+const role_lorry_1 = require("./role.lorry");
+const role_defender_1 = require("./role.defender");
+const role_mineralHarvester_1 = require("./role.mineralHarvester");
+const role_healer_1 = require("./role.healer");
 const roles = {
-    harvester: runHarvester,
-    upgrader: runUpgrader,
-    builder: runBuilder,
-    repairer: runRepairer,
-    wallRepairer: runWallRepairer,
-    longDistanceHarvester: runLongDistanceHarvester,
-    claimer: runClaimer,
-    miner: runMiner,
-    lorry: runLorry,
-    defender: runDefender,
-    mineralHarvester: runMineralHarvester,
-    healer: runHealer,
+    harvester: role_harvester_1.run,
+    upgrader: role_upgrader_1.run,
+    builder: role_builder_1.run,
+    repairer: role_repairer_1.run,
+    wallRepairer: role_wallRepairer_1.run,
+    longDistanceHarvester: role_longDistanceHarvester_1.run,
+    claimer: role_claimer_1.run,
+    miner: role_miner_1.run,
+    lorry: role_lorry_1.run,
+    defender: role_defender_1.run,
+    mineralHarvester: role_mineralHarvester_1.run,
+    healer: role_healer_1.run,
 };
 Creep.prototype.runRole = function () {
     const role = this.memory.role;

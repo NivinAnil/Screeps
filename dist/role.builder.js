@@ -1,5 +1,8 @@
-import { run as runUpgrader } from "./role.upgrader";
-export function run(creep) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.run = void 0;
+const role_upgrader_1 = require("./role.upgrader");
+function run(creep) {
     if (creep.memory.target != undefined &&
         creep.room.name != creep.memory.target) {
         const exit = creep.room.findExitTo(creep.memory.target);
@@ -25,11 +28,12 @@ export function run(creep) {
             }
         }
         else {
-            runUpgrader(creep);
+            (0, role_upgrader_1.run)(creep);
         }
     }
     else {
         creep.getEnergy(true, true);
     }
 }
+exports.run = run;
 //# sourceMappingURL=role.builder.js.map
