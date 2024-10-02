@@ -2,37 +2,34 @@
 require('prototype.creep');
 require('prototype.tower');
 require('prototype.spawn');
-require('role.defender');
-require('role.mineralHarvester');
-require('role.scout');
-require('role.healer');
 
 module.exports.loop = function() {
-    // Clear memory of dead creeps
+    // check for memory entries of died creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
-        if (!Game.creeps[name]) {
+        // and checking if the creep is still alive
+        if (Game.creeps[name] == undefined) {
+            // if not, delete the memory entry
             delete Memory.creeps[name];
         }
     }
 
-    // Run creep logic
+    // for each creeps
     for (let name in Game.creeps) {
+        // run creep logic
         Game.creeps[name].runRole();
     }
 
-    // Run tower logic
+    // find all towers
     var towers = _.filter(Game.structures, s => s.structureType == STRUCTURE_TOWER);
-    towers.forEach(tower => tower.defend());
-
-    // Run spawn logic
-    for (let spawnName in Game.spawns) {
-        Game.spawns[spawnName].spawnCreepsIfNecessary();
+    // for each tower
+    for (let tower of towers) {
+        // run tower logic
+        tower.defend();
     }
 
-    // Optional: Add periodic tasks
-    if (Game.time % 100 === 0) {
-        // Run tasks every 100 ticks
-        console.log('Periodic task: ' + Game.time);
-        // Add your periodic tasks here
+    // for each spawn
+    for (let spawnName in Game.spawns) {
+        // run spawn logic
+        Game.spawns[spawnName].spawnCreepsIfNecessary();
     }
 };
