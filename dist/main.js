@@ -1,16 +1,16 @@
 // import modules
-import "../prototype.creep";
+import "./prototype.creep";
 import "./prototype.tower";
 import "./prototype.spawn";
-import "../role.harvester";
-import "../role.upgrader";
-import "../role.builder";
-import "../role.repairer";
-import "../role.wallRepairer";
-import "../role.longDistanceHarvester";
-import "../role.claimer";
-import "../role.miner";
-import "../role.lorry";
+import "./role.harvester";
+import "./role.upgrader";
+import "./role.builder";
+import "./role.repairer";
+import "./role.wallRepairer";
+import "./role.longDistanceHarvester";
+import "./role.claimer";
+import "./role.miner";
+import "./role.lorry";
 import "./role.defender";
 import "./role.mineralHarvester";
 import "./role.healer";
