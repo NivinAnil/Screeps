@@ -26,12 +26,17 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
     // Initialize minCreeps if it doesn't exist
     if (!this.memory.minCreeps) {
         this.memory.minCreeps = {
-            harvester: 2,
-            upgrader: 1,
-            builder: 1,
+            harvester: 4,
+            upgrader: 2,
+            builder: 2,
             repairer: 1,
-            wallRepairer: 1,
-            // Add other roles with default values as needed
+            wallRepairer: 0,
+            // Early game values for other roles
+            lorry: 0,
+            claimer: 0,
+            longDistanceHarvester: 0,
+            defender: 1,
+            mineralHarvester: 0,
         };
     }
     // Check for each role and spawn if necessary
