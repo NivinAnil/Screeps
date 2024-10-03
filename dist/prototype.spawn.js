@@ -31,12 +31,12 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             builder: 2,
             repairer: 1,
             wallRepairer: 0,
-            // Early game values for other roles
             lorry: 0,
             claimer: 0,
             longDistanceHarvester: 0,
             defender: 1,
             mineralHarvester: 0,
+            miner: 2, // Added miner role with an initial count of 2
         };
     }
     // Check for each role and spawn if necessary
@@ -57,6 +57,20 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             }
             if (name)
                 break;
+        }
+    }
+    // Check for miners
+    if (!name) {
+        const sources = this.room.find(FIND_SOURCES);
+        for (let source of sources) {
+            const miners = _.filter(creepsInRoom, (c) => c.memory.role == 'miner' && c.memory.sourceId == source.id);
+            if (miners.length == 0) {
+                let spawnResult = this.createMiner(source.id);
+                if (spawnResult == OK) {
+                    name = "miner_" + Game.time;
+                    break;
+                }
+            }
         }
     }
     // If no creeps are spawning, check for long distance harvesters

@@ -26,8 +26,9 @@ function loop() {
         }
     }
     // Run creep logic
-    for (let name in Game.creeps) {
-        Game.creeps[name].runRole();
+    for (const name in Game.creeps) {
+        const creep = Game.creeps[name];
+        creep.runRole();
     }
     // Run tower logic
     const towers = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_TOWER);
