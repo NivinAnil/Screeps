@@ -31,7 +31,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             builder: 2,
             repairer: 1,
             wallRepairer: 0,
-            lorry: 0,
+            lorry: 2,
             claimer: 0,
             longDistanceHarvester: 0,
             defender: 1,
@@ -70,6 +70,16 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
                     name = "miner_" + Game.time;
                     break;
                 }
+            }
+        }
+    }
+    // Check for lorries
+    if (!name) {
+        const lorries = _.filter(creepsInRoom, (c) => c.memory.role == 'lorry');
+        if (lorries.length < (this.memory.minCreeps['lorry'] || 2)) {
+            let spawnResult = this.createLorry(maxEnergy);
+            if (spawnResult == OK) {
+                name = "lorry_" + Game.time;
             }
         }
     }
