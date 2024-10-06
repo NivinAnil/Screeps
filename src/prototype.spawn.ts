@@ -93,8 +93,8 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
   // Prioritized roles order
   const prioritizedRoles = [
     "harvester",
+    "miner", // Move miner up in priority
     "upgrader",
-    "miner",
     "lorry",
     ...listOfRoles.filter(
       (role) => !["harvester", "upgrader", "miner", "lorry"].includes(role)

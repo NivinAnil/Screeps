@@ -5,7 +5,7 @@ function run(creep) {
     const source = Game.getObjectById(creep.memory.sourceId);
     if (source) {
         const container = source.pos.findInRange(FIND_STRUCTURES, 1, {
-            filter: s => s.structureType == STRUCTURE_CONTAINER
+            filter: (s) => s.structureType == STRUCTURE_CONTAINER,
         })[0];
         if (container) {
             if (creep.pos.isEqualTo(container.pos)) {
