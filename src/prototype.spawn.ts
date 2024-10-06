@@ -90,25 +90,26 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
     };
   }
 
+  // Prioritized roles order
+  const prioritizedRoles = ["harvester", "miner", "lorry", ...listOfRoles.filter(role => !["harvester", "miner", "lorry"].includes(role))];
+
   // Check for each role and spawn if necessary
-  for (let role of listOfRoles) {
+  for (let role of prioritizedRoles) {
     if (numberOfCreeps[role] < (this.memory.minCreeps[role] || 0)) {
       let spawnResult: ScreepsReturnCode;
       if (role === "harvester") {
-        // Prioritize spawning harvesters
         spawnResult = this.createCustomCreep(Math.min(maxEnergy, 300), role);
-      } else if (role === "lorry") {
-        spawnResult = this.createLorry(maxEnergy);
-      } else if (role === "claimer") {
-        spawnResult = this.createClaimer(this.memory.claimRoom || "");
       } else if (role === "miner") {
         const sources = room.find(FIND_SOURCES);
-        console.log("sources", sources);
         if (sources.length > 0) {
           spawnResult = this.createMiner(sources[0].id);
         } else {
           continue;
         }
+      } else if (role === "lorry") {
+        spawnResult = this.createLorry(maxEnergy);
+      } else if (role === "claimer") {
+        spawnResult = this.createClaimer(this.memory.claimRoom || "");
       } else {
         spawnResult = this.createCustomCreep(maxEnergy, role);
       }
