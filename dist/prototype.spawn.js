@@ -41,7 +41,13 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
         };
     }
     // Prioritized roles order
-    const prioritizedRoles = ["harvester", "miner", "lorry", ...listOfRoles.filter(role => !["harvester", "miner", "lorry"].includes(role))];
+    const prioritizedRoles = [
+        "harvester",
+        "upgrader",
+        "miner",
+        "lorry",
+        ...listOfRoles.filter((role) => !["harvester", "miner", "lorry"].includes(role)),
+    ];
     // Check for each role and spawn if necessary
     for (let role of prioritizedRoles) {
         if (numberOfCreeps[role] < (this.memory.minCreeps[role] || 0)) {
@@ -51,11 +57,14 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             }
             else if (role === "miner") {
                 const sources = room.find(FIND_SOURCES);
-                if (sources.length > 0) {
-                    spawnResult = this.createMiner(sources[0].id);
+                // Find a source that doesn't have a miner
+                const sourceWithoutMiner = sources.find((source) => !_.some(creepsInRoom, (c) => c.memory.role === "miner" && c.memory.sourceId === source.id));
+                console.log("sourceWithoutMiner", sourceWithoutMiner);
+                if (sourceWithoutMiner) {
+                    spawnResult = this.createMiner(sourceWithoutMiner.id);
                 }
                 else {
-                    continue;
+                    continue; // Skip to next role if all sources have miners
                 }
             }
             else if (role === "lorry") {
