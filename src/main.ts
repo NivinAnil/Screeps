@@ -46,6 +46,14 @@ export function loop(): void {
       // Add your periodic tasks here
     }
   }
+
+  // In your main loop
+  for (let name in Game.structures) {
+    const structure = Game.structures[name];
+    if (structure.structureType === STRUCTURE_TOWER) {
+      (structure as StructureTower).defend();
+    }
+  }
 }
 
 export {};
