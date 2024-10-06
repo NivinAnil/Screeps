@@ -2,11 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = void 0;
 function run(creep) {
+    console.log(`Lorry ${creep.name} is running. Working: ${creep.memory.working}`);
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
         creep.memory.working = false;
+        console.log(`Lorry ${creep.name} is now collecting`);
     }
     else if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
         creep.memory.working = true;
+        console.log(`Lorry ${creep.name} is now delivering`);
     }
     if (creep.memory.working) {
         let structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
@@ -20,8 +23,10 @@ function run(creep) {
         }
         if (structure) {
             if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(structure);
+                let moveResult = creep.moveTo(structure);
+                console.log(`Lorry ${creep.name} move result: ${moveResult}`);
             }
+            console.log(`Lorry ${creep.name} is trying to deliver to: ${structure === null || structure === void 0 ? void 0 : structure.pos}`);
         }
     }
     else {
@@ -33,8 +38,10 @@ function run(creep) {
         }
         if (container) {
             if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(container);
+                let moveResult = creep.moveTo(container);
+                console.log(`Lorry ${creep.name} move result: ${moveResult}`);
             }
+            console.log(`Lorry ${creep.name} is trying to collect from: ${container === null || container === void 0 ? void 0 : container.pos}`);
         }
     }
 }
