@@ -13,6 +13,7 @@ const listOfRoles = [
     "mineralHarvester",
     "scout",
     "healer",
+    "miner",
 ];
 StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
     const room = this.room;
@@ -26,37 +27,50 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
     // Initialize minCreeps if it doesn't exist
     if (!this.memory.minCreeps) {
         this.memory.minCreeps = {
-            harvester: 4,
+            harvester: 2,
             upgrader: 2,
             builder: 2,
             repairer: 1,
             wallRepairer: 0,
             // Early game values for other roles
-            lorry: 0,
+            lorry: 1,
             claimer: 0,
             longDistanceHarvester: 0,
             defender: 1,
             mineralHarvester: 0,
+            miner: 1,
         };
     }
     // Check for each role and spawn if necessary
     for (let role of listOfRoles) {
         if (numberOfCreeps[role] < (this.memory.minCreeps[role] || 0)) {
             let spawnResult;
-            if (role == "lorry") {
+            if (role === "harvester") {
+                // Prioritize spawning harvesters
+                spawnResult = this.createCustomCreep(Math.min(maxEnergy, 300), role);
+            }
+            else if (role === "lorry") {
                 spawnResult = this.createLorry(maxEnergy);
             }
-            else if (role == "claimer") {
+            else if (role === "claimer") {
                 spawnResult = this.createClaimer(this.memory.claimRoom || "");
+            }
+            else if (role === "miner") {
+                const sources = room.find(FIND_SOURCES);
+                if (sources.length > 0) {
+                    spawnResult = this.createMiner(sources[0].id);
+                }
+                else {
+                    continue;
+                }
             }
             else {
                 spawnResult = this.createCustomCreep(maxEnergy, role);
             }
-            if (spawnResult == OK) {
+            if (spawnResult === OK) {
                 name = role + "_" + Game.time;
+                break; // Exit the loop after successfully spawning a creep
             }
-            if (name)
-                break;
         }
     }
     // If no creeps are spawning, check for long distance harvesters
