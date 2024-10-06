@@ -11,10 +11,10 @@ function run(creep) {
     if (creep.memory.working) {
         // Delivery logic
         let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-            filter: (s) => (s.structureType == STRUCTURE_SPAWN
-                || s.structureType == STRUCTURE_EXTENSION
-                || s.structureType == STRUCTURE_TOWER)
-                && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            filter: (s) => (s.structureType == STRUCTURE_SPAWN ||
+                s.structureType == STRUCTURE_EXTENSION ||
+                s.structureType == STRUCTURE_TOWER) &&
+                s.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
         });
         if (target) {
             if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -23,8 +23,10 @@ function run(creep) {
         }
         else {
             // If no primary targets, try to transfer to storage
-            if (creep.room.storage && creep.room.storage.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-                if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if (creep.room.storage &&
+                creep.room.storage.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                if (creep.transfer(creep.room.storage, RESOURCE_ENERGY) ==
+                    ERR_NOT_IN_RANGE) {
                     creep.moveToEfficiently(creep.room.storage);
                 }
             }
@@ -32,7 +34,7 @@ function run(creep) {
                 // If no storage or it's full, try to transfer to containers
                 let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (s) => s.structureType == STRUCTURE_CONTAINER &&
-                        s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                        s.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
                 });
                 if (container) {
                     if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -41,7 +43,7 @@ function run(creep) {
                 }
                 else {
                     // If nowhere to put energy, move to a central flag or idle
-                    const idleFlag = Game.flags['IdleSpot'];
+                    const idleFlag = Game.flags["IdleSpot"];
                     if (idleFlag) {
                         creep.moveToEfficiently(idleFlag);
                     }
