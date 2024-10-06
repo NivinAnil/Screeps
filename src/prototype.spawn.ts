@@ -77,12 +77,12 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
       builder: 2,
       repairer: 1,
       wallRepairer: 0,
-      lorry: 2, // Added lorry role with an initial count of 2
+      // Early game values for other roles
+      lorry: 0,
       claimer: 0,
       longDistanceHarvester: 0,
       defender: 1,
       mineralHarvester: 0,
-      miner: 2, // Added miner role with an initial count of 2
     };
   }
 
@@ -101,32 +101,6 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
         name = role + "_" + Game.time;
       }
       if (name) break;
-    }
-  }
-
-  // Check for miners
-  if (!name) {
-    const sources = this.room.find(FIND_SOURCES);
-    for (let source of sources) {
-      const miners = _.filter(creepsInRoom, (c) => c.memory.role == 'miner' && c.memory.sourceId == source.id);
-      if (miners.length == 0) {
-        let spawnResult = this.createMiner(source.id);
-        if (spawnResult == OK) {
-          name = "miner_" + Game.time;
-          break;
-        }
-      }
-    }
-  }
-
-  // Check for lorries
-  if (!name) {
-    const lorries = _.filter(creepsInRoom, (c) => c.memory.role == 'lorry');
-    if (lorries.length < (this.memory.minCreeps['lorry'] || 2)) {
-      let spawnResult = this.createLorry(maxEnergy);
-      if (spawnResult == OK) {
-        name = "lorry_" + Game.time;
-      }
     }
   }
 

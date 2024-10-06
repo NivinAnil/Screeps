@@ -31,12 +31,16 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             builder: 2,
             repairer: 1,
             wallRepairer: 0,
+<<<<<<< HEAD
             lorry: 2,
+=======
+            // Early game values for other roles
+            lorry: 0,
+>>>>>>> parent of 6df170f (added miner and lorry)
             claimer: 0,
             longDistanceHarvester: 0,
             defender: 1,
             mineralHarvester: 0,
-            miner: 2, // Added miner role with an initial count of 2
         };
     }
     // Check for each role and spawn if necessary
@@ -59,6 +63,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
                 break;
         }
     }
+<<<<<<< HEAD
     // Check for miners
     if (!name) {
         const sources = this.room.find(FIND_SOURCES);
@@ -83,6 +88,8 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             }
         }
     }
+=======
+>>>>>>> parent of 6df170f (added miner and lorry)
     // If no creeps are spawning, check for long distance harvesters
     if (!name) {
         for (let roomName in this.memory.minLongDistanceHarvesters) {
