@@ -12,64 +12,74 @@ export function run(creep: Creep): void {
   }
 
   if (creep.memory.working) {
-    // Delivery logic remains the same
-    let structure: AnyStructure | null = creep.pos.findClosestByPath(
-      FIND_MY_STRUCTURES,
-      {
+    // Delivery logic - prioritize containers near sources
+    const containers = creep.room.find(FIND_STRUCTURES, {
+      filter: (s) => s.structureType == STRUCTURE_CONTAINER &&
+                     s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+    });
+
+    let target = creep.pos.findClosestByPath(containers);
+
+    // If no containers or they're full, deliver to spawns, extensions, or towers
+    if (!target) {
+      target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: (s) =>
           (s.structureType == STRUCTURE_SPAWN ||
             s.structureType == STRUCTURE_EXTENSION ||
             s.structureType == STRUCTURE_TOWER) &&
           s.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-      }
-    );
-
-    if (structure == null) {
-      structure = creep.room.storage || null;
+      });
     }
 
-    if (structure) {
-      if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        let moveResult = creep.moveTo(structure);
+    // If everything else is full, deliver to storage
+    if (!target && creep.room.storage) {
+      target = creep.room.storage;
+    }
+
+    if (target) {
+      if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        let moveResult = creep.moveTo(target);
         console.log(`Lorry ${creep.name} move result: ${moveResult}`);
       }
       console.log(
-        `Lorry ${creep.name} is trying to deliver to: ${structure?.pos}`
+        `Lorry ${creep.name} is trying to deliver to: ${target.pos}`
       );
     }
   } else {
-    // Collection logic - prioritize containers and storage
-    let target: Structure | Resource | null = null;
+    // Collection logic - prioritize miner drops
+    const droppedResources = creep.room.find(FIND_DROPPED_RESOURCES, {
+      filter: (r) => r.resourceType == RESOURCE_ENERGY
+    });
 
-    // First, check for containers and storage
-    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    if (droppedResources.length > 0) {
+      const target = creep.pos.findClosestByPath(droppedResources);
+      if (target) {
+        if (creep.pickup(target) == ERR_NOT_IN_RANGE) {
+          let moveResult = creep.moveTo(target);
+          console.log(`Lorry ${creep.name} move result to dropped resource: ${moveResult}`);
+        }
+        console.log(
+          `Lorry ${creep.name} is trying to collect dropped resource at: ${target.pos}`
+        );
+        return;
+      }
+    }
+
+    // If no dropped resources, check containers and storage
+    let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (s) =>
         (s.structureType == STRUCTURE_CONTAINER ||
           s.structureType == STRUCTURE_STORAGE) &&
         s.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity()
     });
 
-    // If no suitable container/storage found, look for large dropped resources
-    if (!target) {
-      target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-        filter: (r) => r.resourceType == RESOURCE_ENERGY && r.amount > 100
-      });
-    }
-
-    if (target) {
-      let actionResult;
-      if (target instanceof Structure) {
-        actionResult = creep.withdraw(target, RESOURCE_ENERGY);
-      } else {
-        actionResult = creep.pickup(target);
-      }
-
-      if (actionResult == ERR_NOT_IN_RANGE) {
-        let moveResult = creep.moveTo(target);
-        console.log(`Lorry ${creep.name} move result: ${moveResult}`);
+    if (container) {
+      if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        let moveResult = creep.moveTo(container);
+        console.log(`Lorry ${creep.name} move result to container: ${moveResult}`);
       }
       console.log(
-        `Lorry ${creep.name} is trying to collect from: ${target.pos}`
+        `Lorry ${creep.name} is trying to collect from container at: ${container.pos}`
       );
     } else {
       console.log(`Lorry ${creep.name} couldn't find any energy to collect`);
