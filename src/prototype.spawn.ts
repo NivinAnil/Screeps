@@ -3,6 +3,7 @@ import * as _ from "lodash";
 const listOfRoles = [
   "harvester",
   "lorry",
+  "miner",
   "claimer",
   "upgrader",
   "repairer",
@@ -12,7 +13,6 @@ const listOfRoles = [
   "mineralHarvester",
   "scout",
   "healer",
-  "miner",
 ];
 
 declare global {
@@ -77,17 +77,16 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
   if (!this.memory.minCreeps) {
     this.memory.minCreeps = {
       harvester: 2,
+      miner: 1,
+      lorry: 1,
       upgrader: 2,
       builder: 2,
       repairer: 1,
       wallRepairer: 0,
-      // Early game values for other roles
-      lorry: 1,
       claimer: 0,
       longDistanceHarvester: 0,
       defender: 1,
       mineralHarvester: 0,
-      miner: 1,
     };
   }
 
