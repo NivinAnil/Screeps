@@ -42,13 +42,6 @@ function loop() {
             // Add your periodic tasks here
         }
     }
-    // In your main loop
-    for (let name in Game.structures) {
-        const structure = Game.structures[name];
-        if (structure.structureType === STRUCTURE_TOWER) {
-            structure.defend();
-        }
-    }
 }
 exports.loop = loop;
 //# sourceMappingURL=main.js.map
