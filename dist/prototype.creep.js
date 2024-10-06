@@ -37,6 +37,17 @@ Creep.prototype.runRole = function () {
 };
 Creep.prototype.getEnergy = function (useContainer, useSource) {
     let container = null;
+    // First, check for dropped resources
+    const droppedResource = this.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+        filter: resource => resource.resourceType == RESOURCE_ENERGY && resource.amount > 50
+    });
+    if (droppedResource) {
+        if (this.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
+            this.moveTo(droppedResource);
+        }
+        return;
+    }
+    // If no dropped resources, proceed with container and source logic
     if (useContainer) {
         container = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (s) => (s.structureType == STRUCTURE_CONTAINER ||
