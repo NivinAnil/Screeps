@@ -32,11 +32,15 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             repairer: 1,
             wallRepairer: 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
             lorry: 2,
 =======
             // Early game values for other roles
             lorry: 0,
 >>>>>>> parent of 6df170f (added miner and lorry)
+=======
+            lorry: 0,
+>>>>>>> parent of 80bee1e (added miner and lorry)
             claimer: 0,
             longDistanceHarvester: 0,
             defender: 1,
@@ -78,6 +82,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             }
         }
     }
+<<<<<<< HEAD
     // Check for lorries
     if (!name) {
         const lorries = _.filter(creepsInRoom, (c) => c.memory.role == 'lorry');
@@ -90,6 +95,8 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
     }
 =======
 >>>>>>> parent of 6df170f (added miner and lorry)
+=======
+>>>>>>> parent of 80bee1e (added miner and lorry)
     // If no creeps are spawning, check for long distance harvesters
     if (!name) {
         for (let roomName in this.memory.minLongDistanceHarvesters) {
