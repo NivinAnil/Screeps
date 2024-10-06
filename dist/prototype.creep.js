@@ -26,6 +26,20 @@ const roles = {
     mineralHarvester: role_mineralHarvester_1.run,
     healer: role_healer_1.run,
 };
+const roleColors = {
+    harvester: "#ffaa00",
+    upgrader: "#00ffaa",
+    builder: "#00aaff",
+    repairer: "#aaff00",
+    wallRepairer: "#ff00aa",
+    longDistanceHarvester: "#aa00ff",
+    claimer: "#ffff00",
+    miner: "#aaaaff",
+    lorry: "#aaffaa",
+    defender: "#ff0000",
+    mineralHarvester: "#00ffff",
+    healer: "#00ff00",
+};
 Creep.prototype.runRole = function () {
     const role = this.memory.role;
     if (role in roles) {
@@ -39,11 +53,11 @@ Creep.prototype.getEnergy = function (useContainer, useSource) {
     let container = null;
     // First, check for dropped resources
     const droppedResource = this.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-        filter: resource => resource.resourceType == RESOURCE_ENERGY && resource.amount > 50
+        filter: (resource) => resource.resourceType == RESOURCE_ENERGY && resource.amount > 50,
     });
     if (droppedResource) {
         if (this.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
-            this.moveTo(droppedResource);
+            this.moveToEfficiently(droppedResource);
         }
         return;
     }
@@ -56,15 +70,49 @@ Creep.prototype.getEnergy = function (useContainer, useSource) {
         });
         if (container) {
             if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.moveTo(container);
+                this.moveToEfficiently(container);
             }
         }
     }
     if (!container && useSource) {
         const source = this.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
         if (source && this.harvest(source) == ERR_NOT_IN_RANGE) {
-            this.moveTo(source);
+            this.moveToEfficiently(source);
         }
     }
 };
+Creep.prototype.moveToEfficiently = function (target) {
+    const targetPos = target instanceof RoomPosition ? target : target.pos;
+    // Visualize the path
+    const color = roleColors[this.memory.role] || "#ffffff";
+    this.room.visual.line(this.pos, targetPos, {
+        color: color,
+        lineStyle: "dashed",
+    });
+    // Use the built-in moveTo function
+    return this.moveTo(targetPos, {
+        visualizePathStyle: { stroke: color, lineStyle: "dashed" },
+        reusePath: 5, // Reuse path for 5 ticks
+    });
+};
+// Helper function to get direction
+function getDirection(dx, dy) {
+    if (dx === 0 && dy === -1)
+        return TOP;
+    if (dx === 1 && dy === -1)
+        return TOP_RIGHT;
+    if (dx === 1 && dy === 0)
+        return RIGHT;
+    if (dx === 1 && dy === 1)
+        return BOTTOM_RIGHT;
+    if (dx === 0 && dy === 1)
+        return BOTTOM;
+    if (dx === -1 && dy === 1)
+        return BOTTOM_LEFT;
+    if (dx === -1 && dy === 0)
+        return LEFT;
+    if (dx === -1 && dy === -1)
+        return TOP_LEFT;
+    return 0;
+}
 //# sourceMappingURL=prototype.creep.js.map

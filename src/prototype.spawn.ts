@@ -77,9 +77,9 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
   if (!this.memory.minCreeps) {
     this.memory.minCreeps = {
       harvester: 2,
-      miner: 1,
-      lorry: 1,
       upgrader: 2,
+      miner: room.find(FIND_SOURCES).length, // Set to number of sources in the room
+      lorry: 1,
       builder: 2,
       repairer: 1,
       wallRepairer: 0,
@@ -93,17 +93,21 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
   // Prioritized roles order
   const prioritizedRoles = [
     "harvester",
-    "miner", // Move miner up in priority
     "upgrader",
+    "miner", // Move miner up in priority
     "lorry",
     ...listOfRoles.filter(
-      (role) => !["harvester", "upgrader", "miner", "lorry"].includes(role)
+      (role) => !["harvester", "miner", "lorry"].includes(role)
     ),
   ];
 
+  console.log(`Current energy: ${this.room.energyAvailable}/${maxEnergy}`);
+
   // Check for each role and spawn if necessary
   for (let role of prioritizedRoles) {
+    console.log(`Checking role: ${role}, current: ${numberOfCreeps[role]}, min: ${this.memory.minCreeps[role] || 0}`);
     if (numberOfCreeps[role] < (this.memory.minCreeps[role] || 0)) {
+      console.log(`Attempting to spawn ${role}`);
       let spawnResult: ScreepsReturnCode;
       
       // Don't spawn lorry if there are no miners
@@ -115,16 +119,11 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
         spawnResult = this.createCustomCreep(Math.min(maxEnergy, 300), role);
       } else if (role === "miner") {
         const sources = room.find(FIND_SOURCES);
-        // Find a source that doesn't have a miner
-        const sourceWithoutMiner = sources.find(
-          (source) =>
-            !_.some(
-              creepsInRoom,
-              (c) =>
-                c.memory.role === "miner" && c.memory.sourceId === source.id
-            )
+        // Find a source without a miner
+        const sourceWithoutMiner = sources.find(source => 
+          !_.some(creepsInRoom, c => c.memory.role === "miner" && c.memory.sourceId === source.id)
         );
-        console.log("sourceWithoutMiner", sourceWithoutMiner);
+        console.log("Source without miner:", sourceWithoutMiner);
 
         if (sourceWithoutMiner) {
           spawnResult = this.createMiner(sourceWithoutMiner.id);
@@ -140,7 +139,10 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
       }
       if (spawnResult === OK) {
         name = role + "_" + Game.time;
+        console.log(`Successfully spawned ${role}`);
         break; // Exit the loop after successfully spawning a creep
+      } else {
+        console.log(`Failed to spawn ${role}, result: ${spawnResult}`);
       }
     }
   }
@@ -181,6 +183,7 @@ StructureSpawn.prototype.createCustomCreep = function (
     body.push(CARRY);
     body.push(MOVE);
   }
+  console.log(`Attempting to spawn ${roleName} with body: ${body}`);
   return this.spawnCreep(body, roleName + "_" + Game.time, {
     memory: { role: roleName, working: false } as CreepMemory,
   });

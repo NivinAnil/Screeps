@@ -26,10 +26,44 @@ const roles: { [key: string]: (creep: Creep) => void } = {
   healer: runHealer,
 };
 
+const roleColors: { [role: string]: string } = {
+  harvester: "#ffaa00",
+  upgrader: "#00ffaa",
+  builder: "#00aaff",
+  repairer: "#aaff00",
+  wallRepairer: "#ff00aa",
+  longDistanceHarvester: "#aa00ff",
+  claimer: "#ffff00",
+  miner: "#aaaaff",
+  lorry: "#aaffaa",
+  defender: "#ff0000",
+  mineralHarvester: "#00ffff",
+  healer: "#00ff00",
+};
+
 declare global {
+  interface CreepMemory {
+    role: string;
+    working?: boolean;
+    home?: string;
+    target?: string;
+    sourceIndex?: number;
+    sourceId?: Id<Source>;
+    cachedPath?: string;
+    cachedPathTarget?: string;
+  }
+
   interface Creep {
     runRole(): void;
     getEnergy(useContainer: boolean, useSource: boolean): void;
+    moveToEfficiently(
+      target: RoomPosition | { pos: RoomPosition }
+    ):
+      | CreepMoveReturnCode
+      | ERR_NO_PATH
+      | ERR_INVALID_TARGET
+      | ERR_NOT_FOUND
+      | -10;
   }
 }
 
@@ -47,15 +81,16 @@ Creep.prototype.getEnergy = function (
   useSource: boolean
 ): void {
   let container: StructureContainer | null = null;
-  
+
   // First, check for dropped resources
   const droppedResource = this.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-    filter: resource => resource.resourceType == RESOURCE_ENERGY && resource.amount > 50
+    filter: (resource) =>
+      resource.resourceType == RESOURCE_ENERGY && resource.amount > 50,
   });
 
   if (droppedResource) {
     if (this.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
-      this.moveTo(droppedResource);
+      this.moveToEfficiently(droppedResource);
     }
     return;
   }
@@ -71,7 +106,7 @@ Creep.prototype.getEnergy = function (
 
     if (container) {
       if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        this.moveTo(container);
+        this.moveToEfficiently(container);
       }
     }
   }
@@ -79,7 +114,41 @@ Creep.prototype.getEnergy = function (
   if (!container && useSource) {
     const source = this.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
     if (source && this.harvest(source) == ERR_NOT_IN_RANGE) {
-      this.moveTo(source);
+      this.moveToEfficiently(source);
     }
   }
 };
+
+Creep.prototype.moveToEfficiently = function (
+  target: RoomPosition | { pos: RoomPosition }
+): CreepMoveReturnCode | ERR_NO_PATH | ERR_INVALID_TARGET | ERR_NOT_FOUND {
+  const targetPos = target instanceof RoomPosition ? target : target.pos;
+
+  // Visualize the path
+  const color = roleColors[this.memory.role] || "#ffffff";
+  this.room.visual.line(this.pos, targetPos, {
+    color: color,
+    lineStyle: "dashed",
+  });
+
+  // Use the built-in moveTo function
+  return this.moveTo(targetPos, {
+    visualizePathStyle: { stroke: color, lineStyle: "dashed" },
+    reusePath: 5, // Reuse path for 5 ticks
+  });
+};
+
+// Helper function to get direction
+function getDirection(dx: number, dy: number): number {
+  if (dx === 0 && dy === -1) return TOP;
+  if (dx === 1 && dy === -1) return TOP_RIGHT;
+  if (dx === 1 && dy === 0) return RIGHT;
+  if (dx === 1 && dy === 1) return BOTTOM_RIGHT;
+  if (dx === 0 && dy === 1) return BOTTOM;
+  if (dx === -1 && dy === 1) return BOTTOM_LEFT;
+  if (dx === -1 && dy === 0) return LEFT;
+  if (dx === -1 && dy === -1) return TOP_LEFT;
+  return 0;
+}
+
+export {};
