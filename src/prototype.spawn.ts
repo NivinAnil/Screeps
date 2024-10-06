@@ -97,7 +97,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
     "miner",
     "lorry",
     ...listOfRoles.filter(
-      (role) => !["harvester", "miner", "lorry"].includes(role)
+      (role) => !["harvester", "upgrader", "miner", "lorry"].includes(role)
     ),
   ];
 
@@ -105,6 +105,12 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
   for (let role of prioritizedRoles) {
     if (numberOfCreeps[role] < (this.memory.minCreeps[role] || 0)) {
       let spawnResult: ScreepsReturnCode;
+      
+      // Don't spawn lorry if there are no miners
+      if (role === "lorry" && numberOfCreeps["miner"] === 0) {
+        continue;
+      }
+
       if (role === "harvester") {
         spawnResult = this.createCustomCreep(Math.min(maxEnergy, 300), role);
       } else if (role === "miner") {
