@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("lodash");
 const listOfRoles = [
     "harvester",
-    "lorry",
-    "miner",
     "claimer",
     "upgrader",
+    "miner",
+    "lorry",
     "repairer",
     "builder",
     "wallRepairer",
@@ -56,6 +56,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
             }
             else if (role === "miner") {
                 const sources = room.find(FIND_SOURCES);
+                console.log("sources", sources);
                 if (sources.length > 0) {
                     spawnResult = this.createMiner(sources[0].id);
                 }

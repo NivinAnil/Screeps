@@ -2,10 +2,10 @@ import * as _ from "lodash";
 
 const listOfRoles = [
   "harvester",
-  "lorry",
-  "miner",
   "claimer",
   "upgrader",
+  "miner",
+  "lorry",
   "repairer",
   "builder",
   "wallRepairer",
@@ -96,16 +96,14 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function ():
       let spawnResult: ScreepsReturnCode;
       if (role === "harvester") {
         // Prioritize spawning harvesters
-        spawnResult = this.createCustomCreep(
-          Math.min(maxEnergy, 300),
-          role
-        );
+        spawnResult = this.createCustomCreep(Math.min(maxEnergy, 300), role);
       } else if (role === "lorry") {
         spawnResult = this.createLorry(maxEnergy);
       } else if (role === "claimer") {
         spawnResult = this.createClaimer(this.memory.claimRoom || "");
       } else if (role === "miner") {
         const sources = room.find(FIND_SOURCES);
+        console.log("sources", sources);
         if (sources.length > 0) {
           spawnResult = this.createMiner(sources[0].id);
         } else {
