@@ -52,11 +52,22 @@ function run(creep) {
         }
     }
     else {
-        // Harvesting logic
-        let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-        if (source) {
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveToEfficiently(source);
+        // Collection logic - prioritize dropped resources
+        const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            filter: (resource) => resource.resourceType == RESOURCE_ENERGY && resource.amount > 50
+        });
+        if (droppedResource) {
+            if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
+                creep.moveToEfficiently(droppedResource);
+            }
+        }
+        else {
+            // If no dropped resources, fall back to harvesting from sources
+            let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            if (source) {
+                if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                    creep.moveToEfficiently(source);
+                }
             }
         }
     }
